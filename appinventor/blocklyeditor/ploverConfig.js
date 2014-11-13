@@ -98,6 +98,7 @@
     './src/blocks/lexical-variables.js',
     './src/blocks/colors.js',
     './src/blocks/components.js',
+    './src/blocks/folders.js',
 
     //generator files
     "./src/generators/yail.js",
