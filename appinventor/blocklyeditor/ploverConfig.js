@@ -89,6 +89,7 @@
     "./src/nameSet.js",
     "./src/substitution.js",
     "./src/language_switch.js",
+    "./src/undoIndicator.js",
 
     // Dialog Utiltiy
     "./src/util.js",

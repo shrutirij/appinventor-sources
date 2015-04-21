@@ -103,6 +103,12 @@ Blockly.Workspace.prototype.warningIndicator = null;
  * @type {Blockly.Backpack}
  */
 Blockly.Backpack.prototype.backpack = null;
+/**
+ * The workspace's undo indicator.
+ * @type {Blockly.UndoIndicator}
+ */
+Blockly.Workspace.prototype.undoIndicator = null;
+
 
 /**
  * PID of upcoming firing of a change event.  Used to fire only one event
@@ -156,10 +162,16 @@ Blockly.Workspace.prototype.dispose = function() {
     this.warningIndicator.dispose();
     this.warningIndicator = null;
   }
+
   if (this.backpack) {
     this.backpack.dispose();
     this.backpack = null;
   }
+
+  if (this.undoIndicator) {
+    this.undoIndicator.dispose();
+    this.undoIndicator = null;
+  }  
 };
 
 /**
@@ -198,6 +210,21 @@ Blockly.Workspace.prototype.addBackpack = function(getMetrics) {
     this.svgGroup_.insertBefore(svgBackpack, this.svgBlockCanvas_);
     this.backpack.init();
   }
+};
+
+/**
+ * Adds the undo indicator.
+ * @param {!Function} getMetrics A function that returns workspace's metrics.
+ */
+Blockly.Workspace.prototype.addUndoIndicator = function(getMetrics) {
+  console.log("inside Blockly.Workspace.prototype.addUndoIndicator");
+  if (Blockly.UndoIndicator && !this.readOnly) {
+    console.log("inside if loop of Blockly.Workspace.prototype.addUndoIndicator");
+    this.undoIndicator = new Blockly.UndoIndicator(getMetrics);
+    var svgUndoIndicator = this.undoIndicator.createDom();
+    this.svgGroup_.insertBefore(svgUndoIndicator, this.svgBlockCanvas_);
+    this.undoIndicator.init();  
+  }  
 };
 
 

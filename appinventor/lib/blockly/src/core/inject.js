@@ -443,6 +443,7 @@ Blockly.init_ = function() {
   Blockly.mainWorkspace.addBackpack();
   Blockly.mainWorkspace.addWarningIndicator(Blockly.mainWorkspace);
   //  Blockly.mainWorkspace.addBackpack(Blockly.getMainWorkspaceMetrics);
+  Blockly.mainWorkspace.addUndoIndicator(Blockly.mainWorkspace);
 
   // Load the sounds.
   Blockly.loadAudio_(
