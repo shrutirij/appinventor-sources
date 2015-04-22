@@ -90,6 +90,7 @@
     "./src/substitution.js",
     "./src/language_switch.js",
     "./src/undoIndicator.js",
+    "./src/undoHandler.js",
 
     // Dialog Utiltiy
     "./src/util.js",
