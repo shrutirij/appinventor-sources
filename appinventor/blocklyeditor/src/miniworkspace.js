@@ -203,7 +203,7 @@ Blockly.MiniWorkspace.prototype.disposeWorkspace = function () {
 //MiniWorkspace cannot be resized - this can change in the future
 Blockly.MiniWorkspace.prototype.createDom_ = function () {
 
-    this.svgGroup_ = Blockly.createSvgElement('g', {}, null);
+    this.svgGroup_ = Blockly.createSvgElement('g', {'class': 'mini-ws'}, null);
     var svgGroupEmboss = Blockly.createSvgElement('g',
         {'filter': 'url(#blocklyEmboss)'}, this.svgGroup_);
 

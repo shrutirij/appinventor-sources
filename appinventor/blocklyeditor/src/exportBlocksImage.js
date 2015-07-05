@@ -122,6 +122,12 @@ out$.svgAsDataUri = function(el, optmetrics, options, cb) {
     toHide[i].setAttribute("visibility", "hidden");
   }
 
+  toHide = clone.getElementsByClassName("mini-ws");
+
+  for (var i = 0; i < toHide.length; i++) {
+    toHide[i].setAttribute("visibility", "hidden");
+  }
+
   toHide = clone.querySelectorAll('image');
 
   for (var i = 0; i < toHide.length; i++) {
