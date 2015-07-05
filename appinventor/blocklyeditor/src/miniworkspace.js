@@ -203,11 +203,12 @@ Blockly.MiniWorkspace.prototype.disposeWorkspace = function () {
 //MiniWorkspace cannot be resized - this can change in the future
 Blockly.MiniWorkspace.prototype.createDom_ = function () {
 
+	var folderName = this.block_.getFolderName();
     this.svgGroup_ = Blockly.createSvgElement('g', {'class': 'mini-ws'}, null);
     var svgGroupEmboss = Blockly.createSvgElement('g',
         {'filter': 'url(#blocklyEmboss)'}, this.svgGroup_);
 
-    this.svgBlockCanvasOuter_ = Blockly.createSvgElement('svg', {'height': '70%', 'width': '40%'}, this.svgGroup_);
+    this.svgBlockCanvasOuter_ = Blockly.createSvgElement('svg', {'height': '70%', 'width': '40%', 'id': "foldername-" + folderName}, this.svgGroup_);
 
     this.svgBlockCanvas_ = Blockly.createSvgElement('g', {}, this.svgBlockCanvasOuter_);
     Blockly.bindEvent_(this.svgBlockCanvas_, 'mousedown', this.svgBlockCanvas_,
@@ -230,7 +231,7 @@ Blockly.MiniWorkspace.prototype.createDom_ = function () {
             'height': '70%', 'width': '40%'}, svgGroupEmboss);
     this.svgTitle_ = Blockly.createSvgElement('text',{
         'class':'blocklyText'},this.svgGroup_);
-    this.svgTitle_.innerHTML=this.block_.getFolderName();
+    this.svgTitle_.innerHTML=folderName;
     this.resizeGroup_ = null;
     //this.svgBlockCanvas_.appendChild(content);
 

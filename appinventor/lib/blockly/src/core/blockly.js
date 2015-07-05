@@ -523,7 +523,7 @@ Blockly.showContextMenu_ = function(e) {
     var exportOption = {enabled: true};
     exportOption.text = Blockly.Msg.EXPORT_IMAGE;
     exportOption.callback = function() {
-      Blockly.ExportBlocksImage.onclickExportBlocks(Blockly.mainWorkspace.getMetrics());
+      Blockly.ExportBlocksImage.onclickExportBlocks(Blockly.mainWorkspace.getMetrics(), "blockly_Svg", "blocks.png");
     }
     options.push(exportOption);
 

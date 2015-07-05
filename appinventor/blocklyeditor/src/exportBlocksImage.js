@@ -93,6 +93,12 @@ out$.svgAsDataUri = function(el, optmetrics, options, cb) {
   }
 
   clone.setAttribute("version", "1.1");
+
+  if(!clone.getAttribute("xmlns"))
+  {    
+    clone.setAttributeNS(xmlns, "xmlns", "http://www.w3.org/2000/svg");
+    clone.setAttributeNS(xmlns, "xmlns:xlink", "http://www.w3.org/1999/xlink");
+  }
   var left = (parseFloat(optmetrics.contentLeft) - parseFloat(optmetrics.viewLeft)).toString();
   var top = (parseFloat(optmetrics.contentTop) - parseFloat(optmetrics.viewTop)).toString();
   clone.setAttribute("viewBox", left + " " + top + " " + optmetrics.contentWidth + " " + optmetrics.contentHeight);
@@ -134,8 +140,12 @@ out$.svgAsDataUri = function(el, optmetrics, options, cb) {
     toHide[i].setAttribute("visibility", "hidden");
   }
 
-  clone.getElementById("rectCorner").setAttribute("visibility", "hidden");
-  clone.getElementById("indicatorWarning").setAttribute("visibility", "hidden");
+  var toChange = clone.getElementById("rectCorner");
+  if(toChange)
+    toChange.setAttribute("visibility", "hidden");
+  var toChange = clone.getElementById("indicatorWarning");
+  if(toChange)
+    toChange.setAttribute("visibility", "hidden");
 
   var svg = doctype + outer.innerHTML;
   svg = svg.replace(/&nbsp/g,'&#160');
@@ -181,7 +191,7 @@ out$.saveSvgAsPng = function(el, name, optmetrics, options) {
  * Call to initiate blockly SVG conversion to PNG
  *
  */
-Blockly.ExportBlocksImage.onclickExportBlocks = function(metrics) {
+Blockly.ExportBlocksImage.onclickExportBlocks = function(metrics, id, name) {
   context : this;  
-  saveSvgAsPng(document.getElementById("blockly_Svg"), "blocks.png", metrics);
+  saveSvgAsPng(document.getElementById(id), name, metrics);
 }

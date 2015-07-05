@@ -20,6 +20,18 @@ Blockly.Blocks['folder'] = {
     getFolderName: function(){
         return this.getFieldValue('NAME');
     },
+    customContextMenu: function (options) {
+      if(!this.expandedFolder_)
+        return;
+      var metrics = this.miniworkspace.getMetrics();
+      var folderName = this.getFolderName();
+      var captureOption =
+            { enabled: true,
+              text: 'Capture Mini-Workspace',
+              callback: function () { Blockly.ExportBlocksImage.onclickExportBlocks(metrics, "foldername-" + folderName, folderName + ".png");}
+            };
+      options.push(captureOption);
+    },
     compose: Blockly.compose,
     typeblock: [{ translatedName: Blockly.Msg.LANG_FOLDERS_FOLDER }]
 };

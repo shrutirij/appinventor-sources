@@ -17,6 +17,7 @@ Blockly.AIFolder.renameFolder = function (newName) {
   // Sets the name in the miniworkspace if it is open
   if(this.sourceBlock_.expandedFolder_){
     this.sourceBlock_.miniworkspace.svgTitle_.innerHTML=newName;
+    this.sourceBlock_.miniworkspace.svgBlockCanvasOuter_.setAttribute('id', 'foldername-' + newName);
   }
   return newName;
 };
