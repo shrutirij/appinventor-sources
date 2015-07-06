@@ -27,7 +27,7 @@ Blockly.Blocks['folder'] = {
       var folderName = this.getFolderName();
       var captureOption =
             { enabled: true,
-              text: 'Capture Mini-Workspace',
+              text: 'Download Folder as Image',
               callback: function () { Blockly.ExportBlocksImage.onclickExportBlocks(metrics, "foldername-" + folderName, folderName + ".png");}
             };
       options.push(captureOption);
