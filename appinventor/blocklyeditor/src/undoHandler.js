@@ -47,9 +47,12 @@ Blockly.UndoHandler.DELETED_BY_MOUSE = "DELETED_BY_MOUSE";
 Blockly.UndoHandler.CREATED_FROM_OTHER_WORKSPACE = "CREATED_FROM_OTHER_WORKSPACE";
 Blockly.UndoHandler.CREATED_FROM_SAME_WORKSPACE = "CREATED_FROM_SAME_WORKSPACE";
 
+Blockly.UndoHandler.rename = "rename";
+
 Blockly.UndoHandler.currentRecord = {};
 Blockly.UndoHandler.savedRecords = [];
 Blockly.UndoHandler.isRecording = false;
+Blockly.UndoHandler.isRenaming = false;
 
 Blockly.UndoHandler.retrieveRecord = function () {
     if(Blockly.UndoHandler.savedRecords.length > 0) {
@@ -128,6 +131,14 @@ Blockly.UndoHandler.processRecord = function(record) {
         record.BLOCK.dispose(false, false);
     }
 
+    if(record.hasOwnProperty(Blockly.UndoHandler.rename))
+    {
+        Blockly.UndoHandler.isRenaming = true;
+        record.BLOCK.changeHandler_(record[Blockly.UndoHandler.rename]);
+        record.BLOCK.setText(record[Blockly.UndoHandler.rename]);
+        Blockly.UndoHandler.isRenaming = false;
+    }
+
     // notify updates
     Blockly.UndoHandler.notifyRecordStackUpdated();
 };
@@ -202,6 +213,10 @@ Blockly.UndoHandler.startRecord = function(block) {
         Blockly.UndoHandler.currentRecord.BLOCK = block;
         Blockly.UndoHandler.isRecording = true;
     }
+    else if(block.sourceBlock_.workspace == Blockly.mainWorkspace && Blockly.UndoHandler.isRecording == false) {
+        Blockly.UndoHandler.currentRecord.BLOCK = block;
+        Blockly.UndoHandler.isRecording = true;
+    }
     else {
         console.log("Blockly.UndoHandler.startRecord: attempting to start new record without ending existing one.");
     }
@@ -226,23 +241,29 @@ Blockly.UndoHandler.addToRecord = function(type, data) {
             else if(type == Blockly.UndoHandler.STATE_TYPE_CREATED) {
                 Blockly.UndoHandler.currentRecord[type] = data;
             }
+            else if(type == Blockly.UndoHandler.rename) {
+                Blockly.UndoHandler.currentRecord[type] = data;
+            }
         }
     }
 };
 
-Blockly.UndoHandler.endRecord = function () {
+Blockly.UndoHandler.endRecord = function (opt_check) {    
+    var check = opt_check || false;
     if(Blockly.UndoHandler.isRecording) {
         // end record and save it, only if there were actual record changes (check by seeing if there are properties other than BLOCK) 
         if(Object.keys(Blockly.UndoHandler.currentRecord).length > 1) {
             // skip cases where created block was deleted right away
             if(!(Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.STATE_TYPE_CREATED] && Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.STATE_TYPE_DELETED])) {
-                // if already saving maximum number of states, delete oldest one which is the element at index 0
-                if(Blockly.UndoHandler.savedRecords.length >= Blockly.UndoHandler.MAX_NUM_SAVED_RECORDS) {
-                    Blockly.UndoHandler.savedRecords.shift();
+                if(!(Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.rename] && !check) && (Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.rename] != Blockly.UndoHandler.currentRecord.BLOCK.text_)) {
+                    // if already saving maximum number of states, delete oldest one which is the element at index 0
+                    if(Blockly.UndoHandler.savedRecords.length >= Blockly.UndoHandler.MAX_NUM_SAVED_RECORDS) {
+                        Blockly.UndoHandler.savedRecords.shift();
+                    }
+                    Blockly.UndoHandler.savedRecords.push(Blockly.UndoHandler.currentRecord);
+                    // notify updates
+                    Blockly.UndoHandler.notifyRecordStackUpdated();
                 }
-                Blockly.UndoHandler.savedRecords.push(Blockly.UndoHandler.currentRecord);
-                // notify updates
-                Blockly.UndoHandler.notifyRecordStackUpdated();
             }
         }
         else if(Blockly.UndoHandler.currentRecord.BLOCK) {

@@ -30,6 +30,7 @@ goog.provide('Blockly.WidgetDiv');
 
 goog.require('Blockly.Css');
 goog.require('goog.dom');
+goog.require('Blockly.UndoHandler');
 
 
 /**
@@ -75,6 +76,9 @@ Blockly.WidgetDiv.hide = function() {
     Blockly.WidgetDiv.owner_ = null;
     Blockly.WidgetDiv.dispose_ = null;
     goog.dom.removeChildren(Blockly.WidgetDiv.DIV);
+    if(Blockly.UndoHandler.isRecording) {
+      Blockly.UndoHandler.endRecord(true);
+    }
   }
 };
 

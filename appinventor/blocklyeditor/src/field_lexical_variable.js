@@ -426,6 +426,12 @@ Blockly.LexicalVariable.renameGlobal = function (newName) {
   // this is bound to field_textinput object 
   var oldName = this.text_;
 
+
+  if(!Blockly.UndoHandler.isRecording && newName != oldName && !Blockly.UndoHandler.isRenaming) {      
+    Blockly.UndoHandler.startRecord(this);
+    Blockly.UndoHandler.addToRecord(Blockly.UndoHandler.rename, this.text_);
+  }
+
   // [lyn, 10/27/13] now check legality of identifiers
   newName = Blockly.LexicalVariable.makeLegalIdentifier(newName);
 
