@@ -422,19 +422,16 @@ Blockly.LexicalVariable = {};
 // Without special handling of empty string, the connection between a declaration field and
 // its references is lots.
 Blockly.LexicalVariable.renameGlobal = function (newName) {
-
+  var htmlInput = Blockly.FieldTextInput.htmlInput_;
   // this is bound to field_textinput object 
   var oldName = this.text_;
-
-
-  if(!Blockly.UndoHandler.isRecording && newName != oldName && !Blockly.UndoHandler.isRenaming) {      
-    Blockly.UndoHandler.startRecord(this);
-    Blockly.UndoHandler.addToRecord(Blockly.UndoHandler.rename, this.text_);
-  }
-
   // [lyn, 10/27/13] now check legality of identifiers
   newName = Blockly.LexicalVariable.makeLegalIdentifier(newName);
 
+  if(htmlInput && !Blockly.UndoHandler.isRecording && newName != oldName && !Blockly.UndoHandler.isRenaming) {      
+    Blockly.UndoHandler.startRecord(this);
+    Blockly.UndoHandler.addToRecord(Blockly.UndoHandler.rename, this.text_);
+  }
   var globals = Blockly.FieldLexicalVariable.getGlobalNames(this.sourceBlock_); 
     // this.sourceBlock excludes block being renamed from consideration
   // Potentially rename declaration against other occurrences
@@ -484,14 +481,17 @@ Blockly.LexicalVariable.renameParam = function (newName) {
 
   var htmlInput = Blockly.FieldTextInput.htmlInput_;
   if(htmlInput && htmlInput.defaultValue == newName){
-    return newName;
+    //return newName;
   }
   // this is bound to field_textinput object 
   var oldName = this.text_; // name being changed to newName
 
   // [lyn, 10/27/13] now check legality of identifiers
   newName = Blockly.LexicalVariable.makeLegalIdentifier(newName);
-
+  if(htmlInput && !Blockly.UndoHandler.isRecording && newName != oldName && !Blockly.UndoHandler.isRenaming) {      
+    Blockly.UndoHandler.startRecord(this);
+    Blockly.UndoHandler.addToRecord(Blockly.UndoHandler.rename, this.text_);
+  }
   // Default behavior consistent with previous behavior is to use "false" for last argument --
   // I.e., will not rename inner declarations, but may rename newName
   return Blockly.LexicalVariable.renameParamFromTo(this.sourceBlock_, oldName, newName, false);

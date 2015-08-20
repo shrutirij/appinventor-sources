@@ -77,7 +77,7 @@ Blockly.WidgetDiv.hide = function() {
     Blockly.WidgetDiv.dispose_ = null;
     goog.dom.removeChildren(Blockly.WidgetDiv.DIV);
     if(Blockly.UndoHandler.isRecording) {
-      Blockly.UndoHandler.endRecord(true);
+      Blockly.UndoHandler.endRecord();
     }
   }
 };

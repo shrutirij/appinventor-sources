@@ -32,6 +32,7 @@ Blockly.FieldParameterFlydown = function(name, isEditable, displayLocation, opt_
        // changeHandler is invoked as method on field, so "this" will be the field.
        // Need to pass correct "this" to both functions!
        var possiblyRenamedText = Blockly.LexicalVariable.renameParam.call(this, text);
+       
        if (opt_additionalChangeHandler) {
          opt_additionalChangeHandler.call(this, possiblyRenamedText);
        }

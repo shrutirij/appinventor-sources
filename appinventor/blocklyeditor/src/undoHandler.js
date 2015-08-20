@@ -134,7 +134,7 @@ Blockly.UndoHandler.processRecord = function(record) {
     if(record.hasOwnProperty(Blockly.UndoHandler.rename))
     {
         Blockly.UndoHandler.isRenaming = true;
-        record.BLOCK.changeHandler_(record[Blockly.UndoHandler.rename]);
+        //record.BLOCK.changeHandler_(record[Blockly.UndoHandler.rename]);
         record.BLOCK.setText(record[Blockly.UndoHandler.rename]);
         Blockly.UndoHandler.isRenaming = false;
     }
@@ -213,7 +213,7 @@ Blockly.UndoHandler.startRecord = function(block) {
         Blockly.UndoHandler.currentRecord.BLOCK = block;
         Blockly.UndoHandler.isRecording = true;
     }
-    else if(block.sourceBlock_.workspace == Blockly.mainWorkspace && Blockly.UndoHandler.isRecording == false) {
+    else if(block.sourceBlock_ && block.sourceBlock_.workspace == Blockly.mainWorkspace && Blockly.UndoHandler.isRecording == false) {
         Blockly.UndoHandler.currentRecord.BLOCK = block;
         Blockly.UndoHandler.isRecording = true;
     }
@@ -248,14 +248,13 @@ Blockly.UndoHandler.addToRecord = function(type, data) {
     }
 };
 
-Blockly.UndoHandler.endRecord = function (opt_check) {    
-    var check = opt_check || false;
+Blockly.UndoHandler.endRecord = function () { 
     if(Blockly.UndoHandler.isRecording) {
         // end record and save it, only if there were actual record changes (check by seeing if there are properties other than BLOCK) 
         if(Object.keys(Blockly.UndoHandler.currentRecord).length > 1) {
             // skip cases where created block was deleted right away
             if(!(Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.STATE_TYPE_CREATED] && Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.STATE_TYPE_DELETED])) {
-                if(!(Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.rename] && !check) && (Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.rename] != Blockly.UndoHandler.currentRecord.BLOCK.text_)) {
+                if(!Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.rename] || (Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.rename] != Blockly.UndoHandler.currentRecord.BLOCK.text_)) {
                     // if already saving maximum number of states, delete oldest one which is the element at index 0
                     if(Blockly.UndoHandler.savedRecords.length >= Blockly.UndoHandler.MAX_NUM_SAVED_RECORDS) {
                         Blockly.UndoHandler.savedRecords.shift();
