@@ -481,7 +481,7 @@ Blockly.LexicalVariable.renameParam = function (newName) {
 
   var htmlInput = Blockly.FieldTextInput.htmlInput_;
   if(htmlInput && htmlInput.defaultValue == newName){
-    //return newName;
+    return newName;
   }
   // this is bound to field_textinput object 
   var oldName = this.text_; // name being changed to newName
