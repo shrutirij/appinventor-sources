@@ -430,7 +430,7 @@ Blockly.LexicalVariable.renameGlobal = function (newName) {
 
   if(htmlInput && !Blockly.UndoHandler.isRecording && newName != oldName && !Blockly.UndoHandler.isRenaming) {      
     Blockly.UndoHandler.startRecord(this);
-    Blockly.UndoHandler.addToRecord(Blockly.UndoHandler.rename, this.text_);
+    Blockly.UndoHandler.addToRecord(Blockly.UndoHandler.STATE_TYPE_RENAMED, this.text_);
   }
   var globals = Blockly.FieldLexicalVariable.getGlobalNames(this.sourceBlock_); 
     // this.sourceBlock excludes block being renamed from consideration
@@ -490,7 +490,7 @@ Blockly.LexicalVariable.renameParam = function (newName) {
   newName = Blockly.LexicalVariable.makeLegalIdentifier(newName);
   if(htmlInput && !Blockly.UndoHandler.isRecording && newName != oldName && !Blockly.UndoHandler.isRenaming) {      
     Blockly.UndoHandler.startRecord(this);
-    Blockly.UndoHandler.addToRecord(Blockly.UndoHandler.rename, this.text_);
+    Blockly.UndoHandler.addToRecord(Blockly.UndoHandler.STATE_TYPE_RENAMED, this.text_);
   }
   // Default behavior consistent with previous behavior is to use "false" for last argument --
   // I.e., will not rename inner declarations, but may rename newName

@@ -112,8 +112,16 @@ Blockly.AIProcedure.removeProcedureValues = function(name, workspace) {
 
 // [lyn, 10/27/13] Defined as a replacement for Blockly.Procedures.rename
 Blockly.AIProcedure.renameProcedure = function (newName) {
-  // this is bound to field_textinput object
+  var htmlInput = Blockly.FieldTextInput.htmlInput_;
+  // this is bound to field_textinput object 
   var oldName = this.text_;
+  // [lyn, 10/27/13] now check legality of identifiers
+  newName = Blockly.LexicalVariable.makeLegalIdentifier(newName);
+
+  if(htmlInput && !Blockly.UndoHandler.isRecording && newName != oldName && !Blockly.UndoHandler.isRenaming) {      
+    Blockly.UndoHandler.startRecord(this);
+    Blockly.UndoHandler.addToRecord(Blockly.UndoHandler.STATE_TYPE_RENAMED, this.text_);
+  }
 
   // [lyn, 10/27/13] now check legality of identifiers
   newName = Blockly.LexicalVariable.makeLegalIdentifier(newName);

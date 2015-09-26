@@ -40,14 +40,13 @@ Blockly.UndoHandler.STATE_TYPE_MOVED = "STATE_TYPE_MOVED";
 Blockly.UndoHandler.STATE_TYPE_CONNECTED = "STATE_TYPE_CONNECTED";
 Blockly.UndoHandler.STATE_TYPE_DISCONNECTED = "STATE_TYPE_DISCONNECTED";
 Blockly.UndoHandler.STATE_TYPE_DELETED = "STATE_TYPE_DELETED";
+Blockly.UndoHandler.STATE_TYPE_RENAMED = "STATE_TYPE_RENAMED";
 
 Blockly.UndoHandler.DELETED_BY_KEY = "DELETED_BY_KEY";
 Blockly.UndoHandler.DELETED_BY_MOUSE = "DELETED_BY_MOUSE";
 
 Blockly.UndoHandler.CREATED_FROM_OTHER_WORKSPACE = "CREATED_FROM_OTHER_WORKSPACE";
 Blockly.UndoHandler.CREATED_FROM_SAME_WORKSPACE = "CREATED_FROM_SAME_WORKSPACE";
-
-Blockly.UndoHandler.rename = "rename";
 
 Blockly.UndoHandler.currentRecord = {};
 Blockly.UndoHandler.savedRecords = [];
@@ -131,11 +130,11 @@ Blockly.UndoHandler.processRecord = function(record) {
         record.BLOCK.dispose(false, false);
     }
 
-    if(record.hasOwnProperty(Blockly.UndoHandler.rename))
+    if(record.hasOwnProperty(Blockly.UndoHandler.STATE_TYPE_RENAMED))
     {
         Blockly.UndoHandler.isRenaming = true;
-        //record.BLOCK.changeHandler_(record[Blockly.UndoHandler.rename]);
-        record.BLOCK.setText(record[Blockly.UndoHandler.rename]);
+        //record.BLOCK.changeHandler_(record[Blockly.UndoHandler.STATE_TYPE_RENAMED]);
+        record.BLOCK.setText(record[Blockly.UndoHandler.STATE_TYPE_RENAMED]);
         Blockly.UndoHandler.isRenaming = false;
     }
 
@@ -241,7 +240,7 @@ Blockly.UndoHandler.addToRecord = function(type, data) {
             else if(type == Blockly.UndoHandler.STATE_TYPE_CREATED) {
                 Blockly.UndoHandler.currentRecord[type] = data;
             }
-            else if(type == Blockly.UndoHandler.rename) {
+            else if(type == Blockly.UndoHandler.STATE_TYPE_RENAMED) {
                 Blockly.UndoHandler.currentRecord[type] = data;
             }
         }
@@ -254,7 +253,7 @@ Blockly.UndoHandler.endRecord = function () {
         if(Object.keys(Blockly.UndoHandler.currentRecord).length > 1) {
             // skip cases where created block was deleted right away
             if(!(Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.STATE_TYPE_CREATED] && Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.STATE_TYPE_DELETED])) {
-                if(!Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.rename] || (Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.rename] != Blockly.UndoHandler.currentRecord.BLOCK.text_)) {
+                if(!Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.STATE_TYPE_RENAMED] || (Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.STATE_TYPE_RENAMED] != Blockly.UndoHandler.currentRecord.BLOCK.text_)) {
                     // if already saving maximum number of states, delete oldest one which is the element at index 0
                     if(Blockly.UndoHandler.savedRecords.length >= Blockly.UndoHandler.MAX_NUM_SAVED_RECORDS) {
                         Blockly.UndoHandler.savedRecords.shift();
