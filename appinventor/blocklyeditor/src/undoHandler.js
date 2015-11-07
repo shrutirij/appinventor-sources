@@ -42,6 +42,7 @@ Blockly.UndoHandler.STATE_TYPE_DISCONNECTED = "STATE_TYPE_DISCONNECTED";
 Blockly.UndoHandler.STATE_TYPE_DELETED = "STATE_TYPE_DELETED";
 Blockly.UndoHandler.STATE_TYPE_RENAMED = "STATE_TYPE_RENAMED";
 Blockly.UndoHandler.STATE_TYPE_COLOUR = "STATE_TYPE_COLOUR";
+Blockly.UndoHandler.STATE_TYPE_COLOUR = "STATE_TYPE_DROPDOWN";
 
 Blockly.UndoHandler.DELETED_BY_KEY = "DELETED_BY_KEY";
 Blockly.UndoHandler.DELETED_BY_MOUSE = "DELETED_BY_MOUSE";
@@ -131,17 +132,19 @@ Blockly.UndoHandler.processRecord = function(record) {
         record.BLOCK.dispose(false, false);
     }
 
-    if(record.hasOwnProperty(Blockly.UndoHandler.STATE_TYPE_RENAMED))
-    {
+    if(record.hasOwnProperty(Blockly.UndoHandler.STATE_TYPE_RENAMED)) {
         Blockly.UndoHandler.isRenaming = true;
         //record.BLOCK.changeHandler_(record[Blockly.UndoHandler.STATE_TYPE_RENAMED]);
         record.BLOCK.setText(record[Blockly.UndoHandler.STATE_TYPE_RENAMED]);
         Blockly.UndoHandler.isRenaming = false;
     }
 
-    if(record.hasOwnProperty(Blockly.UndoHandler.STATE_TYPE_COLOUR))
-    {
+    if(record.hasOwnProperty(Blockly.UndoHandler.STATE_TYPE_COLOUR)) {
         record.BLOCK.setValue(record[Blockly.UndoHandler.STATE_TYPE_COLOUR]);
+    }
+
+    if(record.hasOwnProperty(Blockly.UndoHandler.STATE_TYPE_DROPDOWN)) {
+        record.BLOCK.setValue(record[Blockly.UndoHandler.STATE_TYPE_DROPDOWN]);
     }
 
     // notify updates
@@ -252,6 +255,9 @@ Blockly.UndoHandler.addToRecord = function(type, data) {
             else if(type == Blockly.UndoHandler.STATE_TYPE_COLOUR) {
                 Blockly.UndoHandler.currentRecord[type] = data;
             }
+            else if(type == Blockly.UndoHandler.STATE_TYPE_DROPDOWN) {
+                Blockly.UndoHandler.currentRecord[type] = data;
+            }
         }
     }
 };
@@ -264,13 +270,15 @@ Blockly.UndoHandler.endRecord = function () {
             if(!(Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.STATE_TYPE_CREATED] && Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.STATE_TYPE_DELETED])) {
                 if(!Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.STATE_TYPE_RENAMED] || (Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.STATE_TYPE_RENAMED] != Blockly.UndoHandler.currentRecord.BLOCK.text_)) {
                     if(!Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.STATE_TYPE_COLOUR] || (Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.STATE_TYPE_COLOUR] != Blockly.UndoHandler.currentRecord.BLOCK.colour_)) {
-                        // if already saving maximum number of states, delete oldest one which is the element at index 0
-                        if(Blockly.UndoHandler.savedRecords.length >= Blockly.UndoHandler.MAX_NUM_SAVED_RECORDS) {
-                            Blockly.UndoHandler.savedRecords.shift();
+                         if(!Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.STATE_TYPE_DROPDOWN] || (Blockly.UndoHandler.currentRecord[Blockly.UndoHandler.STATE_TYPE_DROPDOWN] != Blockly.UndoHandler.currentRecord.BLOCK.value_)) {
+                            // if already saving maximum number of states, delete oldest one which is the element at index 0
+                            if(Blockly.UndoHandler.savedRecords.length >= Blockly.UndoHandler.MAX_NUM_SAVED_RECORDS) {
+                                Blockly.UndoHandler.savedRecords.shift();
+                            }
+                            Blockly.UndoHandler.savedRecords.push(Blockly.UndoHandler.currentRecord);
+                            // notify updates
+                            Blockly.UndoHandler.notifyRecordStackUpdated();
                         }
-                        Blockly.UndoHandler.savedRecords.push(Blockly.UndoHandler.currentRecord);
-                        // notify updates
-                        Blockly.UndoHandler.notifyRecordStackUpdated();
                     }
                 }
             }

@@ -101,6 +101,10 @@ Blockly.FieldDropdown.prototype.showEditor_ = function() {
   function callback(e) {
     var menuItem = e.target;
     if (menuItem) {
+      if(!Blockly.UndoHandler.isRecording) {      
+        Blockly.UndoHandler.startRecord(thisField);
+        Blockly.UndoHandler.addToRecord(Blockly.UndoHandler.STATE_TYPE_DROPDOWN, thisField.getValue());
+      }
       var value = menuItem.getValue();
       if (thisField.changeHandler_) {
         // Call any change handler, and allow it to override.
