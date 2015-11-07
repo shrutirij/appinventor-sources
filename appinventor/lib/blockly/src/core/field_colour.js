@@ -27,6 +27,7 @@
 goog.provide('Blockly.FieldColour');
 
 goog.require('Blockly.Field');
+goog.require('Blockly.UndoHandler');
 goog.require('goog.ui.ColorPicker');
 
 
@@ -154,13 +155,17 @@ Blockly.FieldColour.prototype.showEditor_ = function() {
   }
   Blockly.WidgetDiv.position(xy.x, xy.y, windowSize, scrollOffset);
 
+
   // Configure event handler.
   var thisObj = this;
   Blockly.FieldColour.changeEventKey_ = goog.events.listen(picker,
       goog.ui.ColorPicker.EventType.CHANGE,
-      function(event) {
+      function(event) { 
+        if(!Blockly.UndoHandler.isRecording) {      
+          Blockly.UndoHandler.startRecord(thisObj);
+          Blockly.UndoHandler.addToRecord(Blockly.UndoHandler.STATE_TYPE_COLOUR, thisObj.getValue());
+        }
         var colour = event.target.getSelectedColor() || '#000000';
-        Blockly.WidgetDiv.hide();
         if (thisObj.changeHandler_) {
           // Call any change handler, and allow it to override.
           var override = thisObj.changeHandler_(colour);
@@ -171,6 +176,7 @@ Blockly.FieldColour.prototype.showEditor_ = function() {
         if (colour !== null) {
           thisObj.setValue(colour);
         }
+        Blockly.WidgetDiv.hide();    
       });
 };
 
