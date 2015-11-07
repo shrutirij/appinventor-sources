@@ -151,6 +151,10 @@ Blockly.FieldTextInput.prototype.showEditor_ = function(opt_quietInput) {
  */
 Blockly.FieldTextInput.prototype.onHtmlInputChange_ = function(e) {
   var htmlInput = Blockly.FieldTextInput.htmlInput_;
+  if(htmlInput && !Blockly.UndoHandler.isRecording && !Blockly.UndoHandler.isRenaming) {      
+    Blockly.UndoHandler.startRecord(this);
+    Blockly.UndoHandler.addToRecord(Blockly.UndoHandler.STATE_TYPE_RENAMED, this.text_);
+  }
   if (e.keyCode == 13) {
     // Enter
     Blockly.WidgetDiv.hide();
